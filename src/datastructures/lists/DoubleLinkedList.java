@@ -5,9 +5,23 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * A double linked list datastructure
+ *
+ * @param <T> type of object that will be inserted in the list
+ */
 public class DoubleLinkedList<T> {
+    /**
+     * Size of the list
+     */
     private int size;
+    /**
+     * Pointer to list's head
+     */
     private TwoWayNode<T> head;
+    /**
+     * Pointer to list's tail
+     */
     private TwoWayNode<T> tail;
 
     public DoubleLinkedList() {
@@ -16,14 +30,25 @@ public class DoubleLinkedList<T> {
         tail = null;
     }
 
+    /**
+     * @return list's size
+     */
     public int size() {
         return size;
     }
 
+    /**
+     * @return <code>true</code> if list is empty
+     */
     public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     * Adds an element to the end (head) of the list
+     *
+     * @param element the element to be added
+     */
     public void append(T element) {
         TwoWayNode<T> node = new TwoWayNode<>(element);
 
@@ -39,6 +64,11 @@ public class DoubleLinkedList<T> {
         ++size;
     }
 
+    /**
+     * Adds an element to the beginning (tail) of the list
+     *
+     * @param element the element to be added
+     */
     public void addToBeginning(T element) {
         TwoWayNode<T> node = new TwoWayNode<>(element);
 
@@ -49,10 +79,20 @@ public class DoubleLinkedList<T> {
         ++size;
     }
 
+    /**
+     * @see #append(T element)
+     */
     public void add(T element) {
         append(element);
     }
 
+    /**
+     * Adds an element to a specific index inside the list
+     *
+     * @param element the element to be added
+     * @param index   index where element will be added
+     * @throws IndexOutOfBoundsException if the <code>index</code> is outside the boundaries
+     */
     public void add(T element, int index) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException(String.format(
@@ -72,6 +112,13 @@ public class DoubleLinkedList<T> {
         }
     }
 
+    /**
+     * Gets the element in a specific index inside the list
+     *
+     * @param index element's index
+     * @return the element
+     * @throws IndexOutOfBoundsException if the <code>index</code> is outside the boundaries
+     */
     public T get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(String.format(
@@ -84,6 +131,12 @@ public class DoubleLinkedList<T> {
         return fastIterator(index)._2.element;
     }
 
+    /**
+     * Controls if this element is inside the list
+     *
+     * @param element the element to be looked for
+     * @return <code>true</code> if the element is inside the list
+     */
     public boolean contains(T element) {
         TwoWayNode<T> current = head;
 
@@ -96,6 +149,12 @@ public class DoubleLinkedList<T> {
         return false;
     }
 
+    /**
+     * Gets the index of a specific element inside the list
+     *
+     * @param element the element to be looked for
+     * @return -1 if there is no such element in the list, otherwise returns its index
+     */
     public int find(T element) {
         TwoWayNode<T> current = tail;
 
@@ -108,18 +167,34 @@ public class DoubleLinkedList<T> {
         return -1;
     }
 
+    /**
+     * Does a full iteration of the list from tail (index = 0) to head (index = <code>size</code>
+     * - 1)
+     */
     public void forEach(Consumer<T> consumer) {
         for (TwoWayNode<T> current = tail; current != null; current = current.next) {
             consumer.accept(current.element);
         }
     }
 
+    /**
+     * Does a full iteration of the list from head (index = <code>size</code> - 1) to head (index =
+     * 0
+     */
     public void reverseForEach(Consumer<T> consumer) {
         for (TwoWayNode<T> current = head; current != null; current = current.pre) {
             consumer.accept(current.element);
         }
     }
 
+    /**
+     * Applies function: T -> R, to each element of this list
+     *
+     * @param function the function to be applied
+     * @param <R>      the return value of <code>function</code>
+     * @return a new list where each element is the result of mapping each existing element using
+     * <code>function</code>
+     */
     public <R> DoubleLinkedList<R> map(Function<T, R> function) {
         DoubleLinkedList<R> list = new DoubleLinkedList<>();
 
@@ -127,6 +202,12 @@ public class DoubleLinkedList<T> {
         return list;
     }
 
+    /**
+     * Filters is each element of the list based on the condition
+     *
+     * @param predicate the condition each element has to fulfill
+     * @return a new list where each element has fulfill the <code>predicate</code>
+     */
     public DoubleLinkedList<T> filter(Predicate<T> predicate) {
         DoubleLinkedList<T> list = new DoubleLinkedList<>();
         this.forEach(el -> {
@@ -138,6 +219,13 @@ public class DoubleLinkedList<T> {
         return list;
     }
 
+    /**
+     * Removes the first element, counting from tail to had, that fulfills a predicate
+     *
+     * @param predicate the condition element has to fulfill to be removed from the list
+     * @return a new list where the first element that has fulfilled the
+     * <code>predicate</code> has been removed
+     */
     public T removeIf(Predicate<T> predicate) {
         int i = 0;
         for (TwoWayNode<T> current = tail; current != null; current = current.next,
@@ -149,6 +237,13 @@ public class DoubleLinkedList<T> {
         return null;
     }
 
+    /**
+     * Removes all elements that fulfill a predicate
+     *
+     * @param predicate the condition element has to fulfill to be removed from the list
+     * @return a new list where each element that has fulfilled the
+     * <code>predicate</code> has been removed
+     */
     public void removeAll(Predicate<T> predicate) {
         TwoWayNode<T> helper;
         int i = 0;
@@ -165,6 +260,9 @@ public class DoubleLinkedList<T> {
         }
     }
 
+    /**
+     * Prints the list from tail to head.
+     */
     public void printList() {
         TwoWayNode<T> current = tail;
 
@@ -174,14 +272,25 @@ public class DoubleLinkedList<T> {
         }
     }
 
+    /**
+     * @return the element <code>this.tail</code> points to
+     */
     public T tail() {
         return tail.element;
     }
 
+    /**
+     * @return the element <code>this.head</code> points to
+     */
     public T head() {
         return head.element;
     }
 
+    /**
+     * Removes from he element <code>this.tail</code> points to
+     *
+     * @return the removed element
+     */
     public T deleteTail() {
         TwoWayNode<T> out = tail;
 
@@ -193,6 +302,11 @@ public class DoubleLinkedList<T> {
         return out.element;
     }
 
+    /**
+     * Removes from he element <code>this.head</code> points to
+     *
+     * @return the removed element
+     */
     public T deleteHead() {
         TwoWayNode<T> out = head;
 
@@ -204,6 +318,13 @@ public class DoubleLinkedList<T> {
         return out.element;
     }
 
+    /**
+     * Removes the element at a specific index inside the list
+     *
+     * @param index the index to be removed
+     * @return the removed element
+     * @throws IndexOutOfBoundsException if index is outside the boundaries
+     */
     public T remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(String.format(
@@ -223,7 +344,13 @@ public class DoubleLinkedList<T> {
         }
     }
 
-    public T removeValue(T value) {
+    /**
+     * Removes the first value that equals <code>value</code>
+     *
+     * @param value the value that has to be matched
+     * @throws NoSuchElementException if there is no element that equals <code>value</code>
+     */
+    public void removeValue(T value) {
         int index = find(value);
         if (index == -1) {
             throw new NoSuchElementException(String.format(
@@ -231,8 +358,12 @@ public class DoubleLinkedList<T> {
             ));
         }
 
-        return remove(index);
+        remove(index);
     }
+
+
+    /// TODO document the rest of DoubleLinkedList
+
 
     private Pair<Integer, TwoWayNode<T>> fastIterator(int index) {
         TwoWayNode<T> out;
