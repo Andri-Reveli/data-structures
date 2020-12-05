@@ -362,9 +362,13 @@ public class DoubleLinkedList<T> {
     }
 
 
-    /// TODO document the rest of DoubleLinkedList
-
-
+    /**
+     * Does a fast iteration over the list by checking which iteration is faster, from tail
+     * to head or from head to tail
+     *
+     * @param index of desired element
+     * @return a pair of element's index and a pointer to its node
+     */
     private Pair<Integer, TwoWayNode<T>> fastIterator(int index) {
         TwoWayNode<T> out;
         int i;
@@ -384,11 +388,25 @@ public class DoubleLinkedList<T> {
         return new Pair<>(i, out);
     }
 
+    /**
+     * Traverses the list to a specific element and deletes it
+     *
+     * @param index of desired element
+     * @return dhe deleted element
+     */
     private T traversAndDelete(int index) {
         Pair<Integer, TwoWayNode<T>> pair = fastIterator(index);
         return removeNode(pair._2, pair._1);
     }
 
+    /**
+     * Removes a node
+     *
+     * @param out   the node to be removed
+     * @param index of the node. It is needed only if the node to be removed is the
+     *              tail or the head of the list
+     * @return the deleted element
+     */
     private T removeNode(TwoWayNode<T> out, int index) {
         if (index == 0) {
             return deleteTail();
@@ -405,10 +423,22 @@ public class DoubleLinkedList<T> {
         return out.element;
     }
 
+    /**
+     * Adds a new node to an empty list
+     *
+     * @param node the node to be added to the list
+     */
     private void addToEmptyList(TwoWayNode<T> node) {
         head = tail = node;
     }
 
+
+    /**
+     * Traverses to a specific index and adds a new node
+     *
+     * @param index where the new node will be added
+     * @param node  the node that will be added
+     */
     private void traversAndAdd(int index, TwoWayNode<T> node) {
         if (index < size - index) {
             traverseFromTail(index, node);
@@ -418,6 +448,12 @@ public class DoubleLinkedList<T> {
         }
     }
 
+    /**
+     * Traverses the list up to a specific index starting from tail and adds a new node
+     *
+     * @param index index where the node will be added
+     * @param node  that will be added
+     */
     private void traverseFromTail(int index, TwoWayNode<T> node) {
         TwoWayNode<T> current = tail;
 
@@ -428,6 +464,12 @@ public class DoubleLinkedList<T> {
         insert(node, current);
     }
 
+    /**
+     * Traverses the list up to a specific index starting from head and adds a new node
+     *
+     * @param index index where the node will be added
+     * @param node  that will be added
+     */
     private void traverseFromHead(int index, TwoWayNode<T> node) {
         TwoWayNode<T> current = head;
 
@@ -438,6 +480,12 @@ public class DoubleLinkedList<T> {
         insert(node, current);
     }
 
+    /**
+     * Inserts a new node before an existing one
+     *
+     * @param node    that will be added
+     * @param current node
+     */
     private void insert(TwoWayNode<T> node, TwoWayNode<T> current) {
         node.next = current;
         node.pre = current.pre;
